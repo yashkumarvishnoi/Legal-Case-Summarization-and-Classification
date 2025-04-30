@@ -1,0 +1,19 @@
+Classification Report:
+                precision    recall  f1-score   support
+
+administrative     1.0000    1.0000    1.0000        43
+      criminal     1.0000    1.0000    1.0000        26
+         civil     1.0000    1.0000    1.0000        40
+constitutional     1.0000    1.0000    1.0000        20
+        family     1.0000    1.0000    1.0000        22
+    commercial     1.0000    1.0000    1.0000        19
+
+      accuracy                         1.0000       170
+     macro avg     1.0000    1.0000    1.0000       170
+  weighted avg     1.0000    1.0000    1.0000       170
+
+
+Summary Metrics:
+Accuracy: 1.0000
+Macro F1: 1.0000
+Weighted F1: 1.0000

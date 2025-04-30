@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Case Processor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --success-color: #27ae60;
+        } */
+        
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--secondary-color);
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            resize: vertical;
+            transition: border 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .file-upload {
+            margin-top: 20px;
+            padding: 30px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            text-align: center;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        
+        .file-upload label {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        .file-upload small {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .error {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .option-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .toggle-btn {
+            padding: 10px 20px;
+            background: var(--light-gray);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .toggle-btn:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+        
+        .toggle-btn:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Legal Case Processor</h1>
+        
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <div class="option-toggle">
+            <button type="button" class="toggle-btn active" id="textToggle">Text Input</button>
+            <button type="button" class="toggle-btn" id="fileToggle">File Upload</button>
+        </div>
+        
+        <form action="/process" method="POST" enctype="multipart/form-data" id="mainForm">
+            <div class="input-section" id="textInputSection">
+                <h2>Enter Case Text</h2>
+                <textarea name="case_text" placeholder="Paste your legal case text here..."></textarea>
+            </div>
+            
+            <div class="input-section" id="fileUploadSection" style="display: none;">
+                <h2>Upload Document</h2>
+                <div class="file-upload" id="fileUploadArea">
+                    <label for="fileInput">Click to browse files</label>
+                    <p>or drag and drop your file here</p>
+                    <small>Supported formats: PDF, DOCX (Max 20MB)</small>
+                    <input type="file" id="fileInput" name="file" accept=".pdf,.docx">
+                </div>
+                <div id="fileNameDisplay" style="margin-top: 10px; font-style: italic;"></div>
+            </div>
+            
+            <button type="submit" class="btn">Process Case</button>
+        </form>
+    </div>
+
+    <script>
+        // DOM Elements
+        const textToggle = document.getElementById('textToggle');
+        const fileToggle = document.getElementById('fileToggle');
+        const textSection = document.getElementById('textInputSection');
+        const fileSection = document.getElementById('fileUploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+
+        // Toggle between text and file input
+        textToggle.addEventListener('click', () => {
+            textToggle.classList.add('active');
+            fileToggle.classList.remove('active');
+            textSection.style.display = 'block';
+            fileSection.style.display = 'none';
+        });
+
+        fileToggle.addEventListener('click', () => {
+            fileToggle.classList.add('active');
+            textToggle.classList.remove('active');
+            fileSection.style.display = 'block';
+            textSection.style.display = 'none';
+        });
+
+        // File input handling
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileNameDisplay.textContent = `Selected file: ${e.target.files[0].name}`;
+            }
+        });
+
+        // Drag and drop functionality
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = 'var(--secondary-color)';
+            fileUploadArea.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.style.borderColor = '#ccc';
+            fileUploadArea.style.backgroundColor = 'var(--light-gray)';
+        });
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = '#ccc';
+            fileUploadArea.style.backgroundColor = 'var(--light-gray)';
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileNameDisplay.textContent = `Selected file: ${e.dataTransfer.files[0].name}`;
+            }
+        });
+
+        // Initialize to text input view
+        textSection.style.display = 'block';
+        fileSection.style.display = 'none';
+    </script>
+</body>
+</html>
